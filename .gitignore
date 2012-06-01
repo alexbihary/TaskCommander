@@ -34,7 +34,7 @@
 **/*.dotCover
 
 ## NuGet Package Restore enabled
-packages/ 
+packages
 
 # Visual C++ cache files
 ipch/
