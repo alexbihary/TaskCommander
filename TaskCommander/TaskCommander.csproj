@@ -44,10 +44,10 @@
     <Compile Include="Configuration.cs" />
     <Compile Include="Console.cs" />
     <Compile Include="Environment.cs" />
-    <Compile Include="IConsole.cs" />
-    <Compile Include="IEnvironment.cs" />
-    <Compile Include="ITask.cs" />
-    <Compile Include="ITaskDescription.cs" />
+    <Compile Include="Interfaces\IConsole.cs" />
+    <Compile Include="Interfaces\IEnvironment.cs" />
+    <Compile Include="Interfaces\ITask.cs" />
+    <Compile Include="Interfaces\ITaskDescription.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Runner.cs" />
     <Compile Include="Strings.cs" />

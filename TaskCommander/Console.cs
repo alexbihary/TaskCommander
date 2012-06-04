@@ -23,5 +23,10 @@ namespace TaskCommander
         {
             return System.Console.ReadLine();
         }
+
+        public void Clear()
+        {
+            System.Console.Clear();
+        }
     }
 }

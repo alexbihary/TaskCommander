@@ -1,15 +1,22 @@
 ﻿using System;
 using System.ComponentModel.Composition;
+using System.Collections.Generic;
 
 namespace TaskCommander.SampleApp
 {
-    [Task(Task="hello", Description="Starter task that simply prints HelloWorld.")]
+    [Task(Name="hello", Description="Starter task that simply prints HelloWorld.")]
     public class HelloWorldTask : ITask
     {
-        public bool Run(dynamic args, IConsole console)
+        public void Run(IDictionary<string, string> args, IConsole console)
         {
-            console.WriteLine("HelloWorld");
-            return true;
+            if (args.ContainsKey("name"))
+            {
+                console.WriteLine("Hello " + args["name"]);
+            }
+            else
+            {
+                console.WriteLine("HelloWorld");
+            }
         }
     }
 }

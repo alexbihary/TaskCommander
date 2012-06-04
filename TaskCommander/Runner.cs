@@ -4,12 +4,12 @@ using System.Linq;
 using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
 using System.Reflection;
+using System.Text.RegularExpressions;
 
 namespace TaskCommander
 {
     public class Runner
     {
-        private const char SEPARATOR = ':';
         private IConsole _console;
         private IEnvironment _environment;
         private Configuration _configuration;
@@ -60,23 +60,41 @@ namespace TaskCommander
 
         private void RunCommand(string command)
         {
+            IDictionary<string, string> flags;
+            command = ParseFlags(command.Trim(), out flags);
+
             if (command.MatchesAny(new string[] { "x", "q", "exit", "quit" }))
             {
                 _environment.Exit(0);
                 return;
             }
 
-            if (command.MatchesAny(new string[] {"list", "help"}))
+            if (command.MatchesAny(new string[] {"list", "help", "h", "?"}))
             {
                 _console.WriteLine();
                 _console.WriteLine("Available commands:");
+                _console.WriteLine(String.Format("  {0} : {1}", "list", "View all available commands. Same as 'help', 'h', or '?'."));
+                _console.WriteLine(String.Format("  {0} : {1}", "clear", "Clear the screen. Same as 'cls'."));
+                _console.WriteLine(String.Format("  {0} : {1}", "exit", "Exit the program. Same as 'quit', 'x', or 'q'."));
+                _console.WriteLine();
                 foreach (var task in _configuration.Tasks)
-                    _console.WriteLine(String.Format("  {0} : {1}", task.Metadata.Task, task.Metadata.Description));
+                    _console.WriteLine(String.Format("  {0} : {1}", task.Metadata.Name, task.Metadata.Description));
+            }
+            else if (command.MatchesAny(new string[] { "clear", "cls" }))
+            {
+                _console.Clear();
             }
             else if (!String.IsNullOrWhiteSpace(command))
             {
-                var task = _configuration.Tasks.SingleOrDefault<Lazy<ITask, ITaskDescription>>(t => t.Metadata.Task.Matches(command));
-                var result = task.Value.Run(null, _console);
+                var task = _configuration.Tasks.SingleOrDefault<Lazy<ITask, ITaskDescription>>(t => t.Metadata.Name.Matches(command));
+                if (task == null)
+                {
+                    _console.WriteLine("Command not recognized.");
+                }
+                else
+                {
+                    task.Value.Run(flags, _console);
+                }
             }
 
             _console.WriteLine();
@@ -84,6 +102,37 @@ namespace TaskCommander
 
             var nextCommand = _console.ReadLine();
             RunCommand(nextCommand);
+        }
+
+        private string ParseFlags(string command, out IDictionary<string, string> flags)
+        {
+            flags = new Dictionary<string, string>();
+            if (command.IndexOf(' ') > 0)
+            {
+                var cmd = command.Substring(0, command.IndexOf(' '));
+                var flagString = command.Substring(command.IndexOf(' '));
+                var regex = new Regex(@"\s+(-|/)?(?<flag>[\w-]+)([:=](?("")""(?<value>[^""]+)""|(?<value>\w+)))?");
+                var matches = regex.Matches(flagString);
+                foreach (Match match in matches)
+                {
+                    if (match.Groups["flag"].Success && !String.IsNullOrWhiteSpace(match.Groups["flag"].Value))
+                    {
+                        if (match.Groups["value"].Success && !String.IsNullOrWhiteSpace(match.Groups["value"].Value))
+                        {
+                            flags[match.Groups["flag"].Value] = match.Groups["value"].Value;
+                        }
+                        else
+                        {
+                            flags[match.Groups["flag"].Value] = null;
+                        }
+                    }
+                }
+                return cmd;
+            }
+            else
+            {
+                return command;
+            }
         }
     }
 }

@@ -28,15 +28,34 @@ namespace TaskCommander.Tests
             _environment.Verify(e => e.Exit(0), Times.Once());
         }
 
-        [Test]
-        public void Should_Execute_List_Command()
+        //[Test]
+        //public void Should_Execute_List_Command()
+        //{
+        //    _console.Setup(c => c.ReadLine()).Returns<string>();// Returns("list").Callback();
+
+        //    var runner = new Runner(_console.Object, _environment.Object);
+        //    runner.Run();
+
+        //    _console.Verify(c => c.WriteLine("Available Commands:"), Times.Once());
+        //}
+
+        //[Test]
+        //public void Should_Verify_Parameters_Received_By_Task()
+        //{
+        //    _console.Setup(c => c.ReadLine()).Returns("test");
+            
+        //}
+    }
+
+    [Task(Name = "test", Description = "A test task.")]
+    public class TestTask : ITask
+    {
+        public void Run(System.Collections.Generic.IDictionary<string, string> args, IConsole console)
         {
-            _console.Setup(c => c.ReadLine()).Returns("list");
-
-            var runner = new Runner(_console.Object, _environment.Object);
-            runner.Run();
-
-            _console.Verify(c => c.WriteLine("Available Commands:"), Times.Once());
+            foreach (var p in args)
+            {
+                console.WriteLine(String.Format("{0} = {1}", p.Key, p.Value ?? "null"));
+            }
         }
     }
 }
