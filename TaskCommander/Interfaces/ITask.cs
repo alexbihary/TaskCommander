@@ -5,6 +5,6 @@ namespace TaskCommander
 {
     public interface ITask
     {
-        void Run(IDictionary<string, string> args, IConsole console);
+        Prompt Run(IDictionary<string, string> args, IConsole console);
     }
 }

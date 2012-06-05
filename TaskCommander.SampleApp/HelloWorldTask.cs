@@ -7,7 +7,7 @@ namespace TaskCommander.SampleApp
     [Task(Name="hello", Description="Starter task that simply prints HelloWorld.")]
     public class HelloWorldTask : ITask
     {
-        public void Run(IDictionary<string, string> args, IConsole console)
+        public Prompt Run(IDictionary<string, string> args, IConsole console)
         {
             if (args.ContainsKey("name"))
             {
@@ -17,6 +17,7 @@ namespace TaskCommander.SampleApp
             {
                 console.WriteLine("HelloWorld");
             }
+            return Prompt.Continue;
         }
     }
 }

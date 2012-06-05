@@ -60,8 +60,10 @@ namespace TaskCommander
 
         private void RunCommand(string command)
         {
+            var originalCommand = command;
+            Prompt prompt = Prompt.Continue;
             IDictionary<string, string> flags;
-            command = ParseFlags(command.Trim(), out flags);
+            command = ParseFlags(command, out flags);
 
             if (command.MatchesAny(new string[] { "x", "q", "exit", "quit" }))
             {
@@ -93,23 +95,31 @@ namespace TaskCommander
                 }
                 else
                 {
-                    task.Value.Run(flags, _console);
+                    prompt = task.Value.Run(flags, _console);
                 }
             }
 
-            _console.WriteLine();
-            _console.Write(" > ");
+            if (prompt == Prompt.Error)
+            {
+                _console.WriteLine();
+                _console.WriteLine(String.Format("An error occurred while running this command: {0}", originalCommand));
+            }
+            if (prompt != Prompt.Stop)
+            {
+                _console.WriteLine();
+                _console.Write(" > ");
 
-            var nextCommand = _console.ReadLine();
-            RunCommand(nextCommand);
+                var nextCommand = _console.ReadLine();
+                RunCommand(nextCommand); 
+            }
         }
 
         private string ParseFlags(string command, out IDictionary<string, string> flags)
         {
+            command = command.Trim();
             flags = new Dictionary<string, string>();
             if (command.IndexOf(' ') > 0)
             {
-                var cmd = command.Substring(0, command.IndexOf(' '));
                 var flagString = command.Substring(command.IndexOf(' '));
                 var regex = new Regex(@"\s+(-|/)?(?<flag>[\w-]+)([:=](?("")""(?<value>[^""]+)""|(?<value>\w+)))?");
                 var matches = regex.Matches(flagString);
@@ -127,7 +137,7 @@ namespace TaskCommander
                         }
                     }
                 }
-                return cmd;
+                return command.Substring(0, command.IndexOf(' '));
             }
             else
             {

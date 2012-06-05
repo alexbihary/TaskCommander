@@ -5,13 +5,13 @@ using System.Text;
 
 namespace TaskCommander.SampleApp
 {
-    [Task(Name="goodbye", Description="Simple task that says goodbye.")]
-    public class GoodbyeTask : ITask
+    [Task(Name="error", Description="report than an error occurred.")]
+    public class ErrorTask : ITask
     {
         public Prompt Run(IDictionary<string, string> args, IConsole console)
         {
-            console.WriteLine("Goodbye...");
-            return Prompt.Stop;
+            console.WriteLine("Yikes, an error!");
+            return Prompt.Error;
         }
     }
 }

@@ -50,12 +50,13 @@ namespace TaskCommander.Tests
     [Task(Name = "test", Description = "A test task.")]
     public class TestTask : ITask
     {
-        public void Run(System.Collections.Generic.IDictionary<string, string> args, IConsole console)
+        public Prompt Run(System.Collections.Generic.IDictionary<string, string> args, IConsole console)
         {
             foreach (var p in args)
             {
                 console.WriteLine(String.Format("{0} = {1}", p.Key, p.Value ?? "null"));
             }
+            return Prompt.Stop;
         }
     }
 }
