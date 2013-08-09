@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace TaskCommander.SampleApp
 {
@@ -11,7 +9,10 @@ namespace TaskCommander.SampleApp
         public Prompt Run(IDictionary<string, string> args, IConsole console)
         {
             console.WriteLine("Yikes, an error!");
-            return Prompt.Error;
+            throw new Exception("what@!!@@");
+
+            //or handle errors internally and just return Prompt.Error
+            //return Prompt.Error;
         }
     }
 }
