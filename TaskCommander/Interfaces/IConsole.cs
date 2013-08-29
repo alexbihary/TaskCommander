@@ -15,6 +15,7 @@ namespace TaskCommander
         void Success(string text);
         void SuccessLine(string text);
         void Clear();
+        string Prompt(string text);
 
         Settings Settings { get; }
     }

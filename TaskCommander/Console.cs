@@ -33,15 +33,10 @@ namespace TaskCommander
         public void Success(string text) { Write(text, Settings.SuccessMessageColor); }
         public void SuccessLine(string text) { WriteLine(text, Settings.SuccessMessageColor); }
 
-        public string ReadLine()
-        {
-            return System.Console.ReadLine();
-        }
+        public string ReadLine() { return System.Console.ReadLine(); }
+        public void Clear() { System.Console.Clear(); }
 
-        public void Clear()
-        {
-            System.Console.Clear();
-        }
+        public string Prompt(string text) { Write(text); return ReadLine(); }
 
         public Settings Settings { get; private set; }
     }

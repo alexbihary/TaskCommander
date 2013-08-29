@@ -14,11 +14,12 @@ namespace TaskCommander.SampleApp
         {
             if (args.ContainsKey("name"))
             {
-                console.WriteLine("Hello " + args["name"]);
+                console.WarningLine("Hello " + args["name"]);
             }
             else
             {
-                console.WriteLine("HelloWorld");
+                var name = console.Prompt("What's your name? ");
+                console.SuccessLine("HelloWorld " + name + "!");
             }
             return Prompt.Continue;
         }
