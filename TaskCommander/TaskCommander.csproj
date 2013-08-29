@@ -43,6 +43,7 @@
   <ItemGroup>
     <Compile Include="Configuration.cs" />
     <Compile Include="Console.cs" />
+    <Compile Include="Settings.cs" />
     <Compile Include="Environment.cs" />
     <Compile Include="Interfaces\IConsole.cs" />
     <Compile Include="Interfaces\IEnvironment.cs" />

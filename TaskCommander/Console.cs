@@ -4,24 +4,34 @@ namespace TaskCommander
 {
     public class Console : TaskCommander.IConsole
     {
-        private ConsoleColor _color;
-        public Console(ConsoleColor color = ConsoleColor.White)
+        public Console(Settings settings = null)
         {
-            System.Console.Title = "TaskCommander";
-            _color = color;
+            Settings = settings ?? new Settings();
+            System.Console.Title = String.Format("{0} {1}", Settings.WindowTitle, Settings.WindowSubTitle);
         }
 
-        public void WriteLine(string text, ConsoleColor color = ConsoleColor.White)
+        public void WriteLine(string text = "") { WriteLine(text, Settings.DefaultColor); }
+        public void WriteLine(string text, ConsoleColor color)
         {
             System.Console.ForegroundColor = color;
             System.Console.WriteLine(text);
         }
 
-        public void Write(string text, ConsoleColor color = ConsoleColor.White)
+        public void Write(string text) { Write(text, Settings.DefaultColor); }
+        public void Write(string text, ConsoleColor color)
         {
             System.Console.ForegroundColor = color;
             System.Console.Write(text);
         }
+
+        public void Error(string text) { Write(text, Settings.ErrorMessageColor); }
+        public void ErrorLine(string text) { WriteLine(text, Settings.ErrorMessageColor); }
+
+        public void Warning(string text) { Write(text, Settings.WarningMessageColor); }
+        public void WarningLine(string text) { WriteLine(text, Settings.WarningMessageColor); }
+
+        public void Success(string text) { Write(text, Settings.SuccessMessageColor); }
+        public void SuccessLine(string text) { WriteLine(text, Settings.SuccessMessageColor); }
 
         public string ReadLine()
         {
@@ -32,5 +42,7 @@ namespace TaskCommander
         {
             System.Console.Clear();
         }
+
+        public Settings Settings { get; private set; }
     }
 }

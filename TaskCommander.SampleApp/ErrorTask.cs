@@ -8,7 +8,7 @@ namespace TaskCommander.SampleApp
     {
         public Prompt Run(IDictionary<string, string> args, IConsole console)
         {
-            console.WriteLine("Yikes, an error!");
+            console.ErrorLine("Yikes, an error!");
             throw new Exception("what@!!@@");
 
             //or handle errors internally and just return Prompt.Error

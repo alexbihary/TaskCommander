@@ -15,11 +15,13 @@ namespace TaskCommander
         private Configuration _configuration;
         private string _prompt = "$ ";
         private IDictionary<string, string> _baseCommands;
+        private Settings _settings;
         const string TenSpaces = "           ";
 
-        public Runner()
+        public Runner(Settings settings = null)
         {
-            _console = new Console();
+            _settings = settings ?? new Settings();
+            _console = new Console(_settings);
             _environment = new Environment();
             ComposeConfiguration();
             Setup();
@@ -29,6 +31,7 @@ namespace TaskCommander
         {
             _console = console;
             _environment = environment;
+            _settings = _console.Settings;
             ComposeConfiguration();
             Setup();
         }
@@ -53,15 +56,15 @@ namespace TaskCommander
 
         public void Run()
         {
-            _console.WriteLine("[TaskCommander]", ConsoleColor.DarkYellow);
-            _console.WriteLine("Type 'list' to view all available commands. Type 'x' to exit.", ConsoleColor.Gray);
+            _console.WriteLine(String.Format("{0} {1}", _settings.WindowTitle, _settings.WindowSubTitle), _settings.TitleColor);
+            _console.WriteLine("Type 'list' to view all available commands. Type 'x' to exit.");
             var prompt = Prompt.Continue;
             try
             {
                 while (prompt != Prompt.Stop)
                 {
                     _console.WriteLine();
-                    _console.Write(_prompt);
+                    _console.Write(_prompt, _settings.PromptColor);
                     var command = _console.ReadLine();
                     prompt = RunCommand(command);
                 }
@@ -70,12 +73,12 @@ namespace TaskCommander
             catch (Exception ex)
             {
                 _console.WriteLine();
-                _console.WriteLine("Sorry, an exception occurred...", ConsoleColor.DarkRed);
-                _console.WriteLine(String.Format("Type: {0}", ex.GetType().FullName), ConsoleColor.Gray);
-                _console.WriteLine(String.Format("Message: {0}", ex.Message), ConsoleColor.Gray);
-                _console.WriteLine(String.Format("Source: {0}", ex.Source), ConsoleColor.Gray);
-                _console.WriteLine(String.Format("Stacktrace: {0}", ex.StackTrace), ConsoleColor.Gray);
-                _console.WriteLine("Recovering...", ConsoleColor.DarkGreen);
+                _console.ErrorLine("Sorry, an exception occurred...");
+                _console.WriteLine(String.Format("Type: {0}", ex.GetType().FullName));
+                _console.WriteLine(String.Format("Message: {0}", ex.Message));
+                _console.WriteLine(String.Format("Source: {0}", ex.Source));
+                _console.WriteLine(String.Format("Stacktrace: {0}", ex.StackTrace));
+                _console.SuccessLine("Recovering...");
                 _console.WriteLine();
                 Run();
             }
@@ -96,15 +99,15 @@ namespace TaskCommander
 
             if (command.Matches("list"))
             {
-                _console.WriteLine("Available commands:", ConsoleColor.Gray);
+                _console.WriteLine("Available commands:");
                 foreach (var cmd in _baseCommands)
                 {
-                    WriteCommand(cmd.Key, cmd.Value);
+                    WriteCommandHelp(cmd.Key, cmd.Value);
                 }
                 _console.WriteLine();
                 foreach (var task in _configuration.Tasks)
                 {
-                    WriteCommand(task.Metadata.Name.Substring(0, Math.Min(TenSpaces.Length, task.Metadata.Name.Length)), task.Metadata.Description);
+                    WriteCommandHelp(task.Metadata.Name.Substring(0, Math.Min(TenSpaces.Length, task.Metadata.Name.Length)), task.Metadata.Description);
                 }
                 _console.WriteLine();
                 WriteHelpInfomation();
@@ -122,9 +125,13 @@ namespace TaskCommander
                     else
                     {
                         if (String.IsNullOrEmpty(task.Metadata.Help))
+                        {
                             WriteHelpInfomation();
+                        }
                         else
+                        {
                             _console.WriteLine(task.Metadata.Help);
+                        }
                     }
                 }
                 else
@@ -151,26 +158,26 @@ namespace TaskCommander
 
             if (prompt == Prompt.Error)
             {
-                _console.WriteLine(String.Format("An error occurred while running this command: {0}", originalCommand), ConsoleColor.DarkRed);
+                _console.WriteLine(String.Format("An error occurred while running this command: {0}", originalCommand), _settings.ErrorMessageColor);
             }
             return prompt;
         }
 
         private void WriteHelpInfomation()
         {
-            _console.WriteLine("Type 'help <command>' for more information on a specific command.", ConsoleColor.Gray);
+            _console.WriteLine("Type 'help <command>' for more information on a specific command.");
         }
 
         private void WriteCommandWarning()
         {
-            _console.WriteLine("Command not recognized. Type 'list' to view all commands.", ConsoleColor.DarkYellow);
+            _console.WriteLine("Command not recognized. Type 'list' to view all commands.", _settings.WarningMessageColor);
         }
 
-        private void WriteCommand(string name, string description)
+        private void WriteCommandHelp(string name, string description)
         {
-            _console.Write("  " + name, ConsoleColor.DarkGreen);
+            _console.Write("  " + name, _settings.HelpKeyColor);
             _console.Write(TenSpaces.Substring(0, TenSpaces.Length - name.Length));
-            _console.WriteLine(description, ConsoleColor.Gray);
+            _console.WriteLine(description, _settings.HelpValueColor);
         }
 
         private string ParseFlags(string command, out IDictionary<string, string> flags)
