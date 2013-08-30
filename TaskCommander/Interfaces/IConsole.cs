@@ -16,6 +16,7 @@ namespace TaskCommander
         void SuccessLine(string text);
         void Clear();
         string Prompt(string text);
+        string ValidatePrompt(string text, Func<string, bool> validator, string validationMessage);
 
         Settings Settings { get; }
     }

@@ -37,6 +37,30 @@ namespace TaskCommander
         public void Clear() { System.Console.Clear(); }
 
         public string Prompt(string text) { Write(text); return ReadLine(); }
+        public string ValidatePrompt(string text, Func<string, bool> validator, string validationMessage)
+        {
+            var input = "";
+            var tries = 0;
+            var passedValidation = false;
+            while (tries < Settings.MaxValidationAttempts && !passedValidation)
+            {
+                Write(text);
+                input = ReadLine();
+                if (validator == null || validator.Invoke(input))
+                {
+                    passedValidation = true;
+                }
+                else
+                {
+                    ErrorLine(validationMessage ?? "");
+                }
+                tries++;
+            }
+
+            if (passedValidation) return input;
+            
+            throw new Exception("Failed input validation.");
+        }
 
         public Settings Settings { get; private set; }
     }
