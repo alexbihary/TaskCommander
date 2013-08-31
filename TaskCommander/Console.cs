@@ -36,7 +36,7 @@ namespace TaskCommander
         public string ReadLine() { return System.Console.ReadLine(); }
         public void Clear() { System.Console.Clear(); }
 
-        public string Prompt(string text) { Write(text); return ReadLine(); }
+        public string Prompt(string text) { Write(text, Settings.PromptColor); return ReadLine(); }
         public string ValidatePrompt(string text, Func<string, bool> validator, string validationMessage)
         {
             var input = "";
@@ -44,7 +44,7 @@ namespace TaskCommander
             var passedValidation = false;
             while (tries < Settings.MaxValidationAttempts && !passedValidation)
             {
-                Write(text);
+                Write(text, Settings.PromptColor);
                 input = ReadLine();
                 if (validator == null || validator.Invoke(input))
                 {
