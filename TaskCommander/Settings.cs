@@ -20,6 +20,6 @@ namespace TaskCommander
         public virtual string WindowTitle { get { return "[TaskCommander]"; } }
         public virtual string WindowSubTitle { get { return ""; } }
 
-        public virtual int MaxValidationAttempts { get { return 5; } }
+        public virtual int MaxValidationAttempts { get { return 3; } }
     }
 }
