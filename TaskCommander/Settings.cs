@@ -12,8 +12,6 @@ namespace TaskCommander
         public virtual ConsoleColor SuccessMessageColor { get { return ConsoleColor.DarkGreen; } }
         public virtual ConsoleColor ListKeyColor { get { return ConsoleColor.DarkCyan; } }
         public virtual ConsoleColor ListValueColor { get { return ConsoleColor.Gray; } }
-        public virtual ConsoleColor ListKeyAltColor { get { return ConsoleColor.DarkMagenta; } }
-        public virtual ConsoleColor ListValueAltColor { get { return ConsoleColor.DarkGray; } }
         public virtual ConsoleColor HelpKeyColor { get { return ConsoleColor.DarkGreen; } }
         public virtual ConsoleColor HelpValueColor { get { return ConsoleColor.Gray; } }
 
