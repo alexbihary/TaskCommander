@@ -16,6 +16,9 @@ namespace TaskCommander.SampleApp
             if (args.ContainsKey("name"))
             {
                 console.WarningLine("Hello " + args["name"]);
+                var integerStr = console.ValidatePrompt("Enter integer: ", Helpers.Validation.IntValidator(1, 10), "Not an integer.");
+                var doubleStr = console.ValidatePrompt("Enter double: ", Helpers.Validation.DoubleValidator(), "Not an double.");
+                var boolStr = console.ValidatePrompt("Enter bool: ", Helpers.Validation.BoolValidator(), "Not an bool.");
             }
             else
             {
